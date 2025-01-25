@@ -1554,7 +1554,7 @@ actions:
 
                     custom_action_auto_multi: !input custom_action_auto_multi
 
-                    content_type: {{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}
+                    content_type: "{{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                 - alias: "Debug: Loop Output"
                   choose:
                     - conditions:
