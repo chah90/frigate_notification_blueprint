@@ -198,7 +198,7 @@ blueprint:
                 - label: Thumbnail
                   value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/thumbnail.jpg?bbox=0"
                 - label: Snapshot
-                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot-clean.png"
+                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg?bbox=0"
                 - label: Snapshot with bounding box
                   value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg?bbox=1&format=android"
                 - label: Snapshot cropped
@@ -640,10 +640,12 @@ blueprint:
             The URL to open when tapping on the notification. Some presets are provided, you can also set your own by typing in the box.
 
             These options define the text and URLs associated with the three action buttons at the bottom of the notification.
-          default: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/{{camera}}/clip.mp4"
+          default: "homeassistant://navigate/dashboard-home/kameras"
           selector:
             select:
               options:
+                - label: Kamera Dashboard
+                  value: "homeassistant://navigate/dashboard-home/kameras"               
                 - label: View Clip
                   value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/{{camera}}/clip.mp4"
                 - label: View Clip (IOS)
@@ -722,7 +724,7 @@ blueprint:
         url_2:
           name: Action Button 2 URL
           description: Customise what happens when you press the second Action Button. Select from one of the preconfigured options or enter your own custom URL.
-          default: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot-clean.png"
+          default: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg"
           selector:
             select:
               options:
@@ -731,7 +733,7 @@ blueprint:
                 - label: View Clip (IOS)
                   value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/{{camera}}/master.m3u8"
                 - label: View Snapshot
-                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot-clean.png"
+                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg"
                 - label: View Stream
                   value: "{{base_url}}/api/camera_proxy_stream/camera.{{trigger.payload_json['after']['camera'] | lower | replace('-','_')}}?token={{state_attr( 'camera.' ~ camera, 'access_token')}}"
                 - label: Open Home Assistant (web)
@@ -898,7 +900,7 @@ blueprint:
         redacted:
           name: Redact Base URL
           description: Hides the Base URL in the debug output for easier sharing. Does not hide it from other parts of the trace.
-          default: true
+          default: false
           selector:
             boolean:
 mode: parallel
