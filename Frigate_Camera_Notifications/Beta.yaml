@@ -1554,7 +1554,8 @@ actions:
 
                     custom_action_auto_multi: !input custom_action_auto_multi
 
-                    content_type: "{{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+                    new_content_type: "{{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+
                 - alias: "Debug: Loop Output"
                   choose:
                     - conditions:
@@ -1575,7 +1576,7 @@ actions:
                                   Android Sound: {{'disabled by alert once' if alert_once else 'enabled'}},
                                   iOS url: "{{(video if not redacted or not base_url else video |replace(base_url, 'REDACTED')) if video else attachment if not redacted or not base_url else attachment |replace(base_url, 'REDACTED')}}", 
                                   Video: "{{video if not redacted or not base_url else video |replace(base_url, 'REDACTED')}}", 
-
+                                  Content-Type: "{{new_content_type}}"
                                   Critical: {{critical}},
                                   TTS: {{tts}}
                                 Triggers:
@@ -1744,7 +1745,7 @@ actions:
                                         url: "{{tap_action}}"
                                         attachment:
                                           url: "{{video if video else attachment }}"
-                                          content-type: "{{ content_type }}"                                          
+                                          content-type: "{{ new_content_type }}"                                          
                                           #content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                         push:
                                           sound:
@@ -1802,7 +1803,7 @@ actions:
                                           url: "{{tap_action}}"
                                           attachment:
                                             url: "{{video if video else attachment }}"
-                                            content-type: "{{ content_type }}"
+                                            content-type: "{{ new_content_type }}"
                                           push:
                                             sound:
                                               name: "{{ iif(silent_update, 'none', sound) }}"
@@ -1856,7 +1857,7 @@ actions:
                                       url: "{{tap_action}}"
                                       attachment:
                                         url: "{{video if video else attachment }}"
-                                        content-type: "{{ content_type }}"                                          
+                                        content-type: "{{ new_content_type }}"                                          
                                         #content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                       push:
                                         sound:
