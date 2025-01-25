@@ -1,5 +1,5 @@
 blueprint:
-  name: Frigate Notifications (0.14.0.2u)
+  name: Frigate Notifications (0.14.0.2u-ca)
   author: SgtBatten
   homeassistant:
     min_version: 2024.11.0
@@ -33,7 +33,7 @@ blueprint:
     Go to https://github.com/SgtBatten/HA_blueprints to report bugs, request new features, or get support with your configuration.
 
   domain: automation
-  source_url: https://github.com/SgtBatten/HA_blueprints/blob/main/Frigate_Camera_Notifications/Beta.yaml
+  source_url: https://raw.githubusercontent.com/chah90/frigate_notification_blueprint/refs/heads/main/Frigate_Camera_Notifications/Beta.yaml
   input:
     camera:
       name: Frigate Cameras
@@ -119,16 +119,16 @@ blueprint:
             The message of the notification.
             You can use variables such as {{camera_name}} and {{label}}
             e.g., A {{ label }} {{ ' was' if type == 'end' else '' }} detected on the {{ camera_name }} camera.
-          default: "A {{ label }} {{ 'was detected' }} on the {{ camera_name }} camera."
+          default: "{{ label }} {{ ' wurde' if type == 'end' else '' }} an der {{ camera_name }} erkannt."
           selector:
             select:
               options:
-                - label: "Default:   e.g., A Person was detected on the Side camera."
-                  value: "A {{ label }} {{ 'was detected' }} on the {{ camera_name }} camera."
+                - label: "Default:   e.g., Person wurde an der Haustür erkannt."
+                  value: "{{ label }} {{ ' wurde' if type == 'end' else '' }} an der {{ camera_name }} erkannt."
                 - label: "Short:     e.g., Person detected - Side"
-                  value: "{{ label }} detected - {{ camera_name }}"
+                  value: "{{ label }} erkannt - {{ camera_name }}"
                 - label: "Short with a timestamp HH:MM"
-                  value: "{{ label }} detected - {{ camera_name }} at {{event['after']['start_time']|timestamp_custom('%H:%M')}}"
+                  value: "{{ label }} erkannt - {{ camera_name }} at {{event['after']['start_time']|timestamp_custom('%H:%M')}}"
                 - label: "Long:      e.g., A Person was detected on the Side camera in the driveway."
                   value: "{{ label }}{{ ' was' if type == 'end' else '' }} detected on the {{ camera_name }} camera{{' in the ' if after_zones|length}}{{ after_zones | join(', ') | replace('_', ' ' ) | title }}."
                 - label: "Long with a timestamp HH:MM"
@@ -196,9 +196,9 @@ blueprint:
               options:
                 # format=android converts it to a 2:1 ratio for mobile display.
                 - label: Thumbnail
-                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/thumbnail.jpg?format=android"
+                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/thumbnail.jpg?bbox=0"
                 - label: Snapshot
-                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg?format=android"
+                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot-clean.png"
                 - label: Snapshot with bounding box
                   value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg?bbox=1&format=android"
                 - label: Snapshot cropped
@@ -264,7 +264,7 @@ blueprint:
         final_update:
           name: Final update (Optional)
           description: Update the notification at the end of the event. Used to ensure the full video of GIF is sent. Configure the delay if necessary in the timers section (default - 5 seconds).
-          default: false
+          default: true
           selector:
             boolean:
         color:
@@ -676,14 +676,16 @@ blueprint:
         button_1:
           name: Action Button 1 Text
           description: 'The text used on the first Action button at the bottom of the notification. Set the URL below. (Default is "View Clip")'
-          default: "View Clip"
+          default: "Zur Kamera"
         url_1:
           name: Action Button 1 URL
           description: Customise what happens when you press the first Action Button. Select from one of the preconfigured options or enter your own custom URL.
-          default: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/{{camera}}/clip.mp4"
+          default: "homeassistant://navigate/dashboard-home/kameras"
           selector:
             select:
               options:
+                - label: Kamera Dashboard
+                  value: "homeassistant://navigate/dashboard-home/kameras"              
                 - label: View Clip
                   value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/{{camera}}/clip.mp4"
                 - label: View Clip (IOS)
@@ -716,11 +718,11 @@ blueprint:
         button_2:
           name: Action Button 2 Text
           description: "The text used on the second Action button at the bottom of the notification. Set the URL below."
-          default: "View Snapshot"
+          default: "Ereignisfoto ansehen"
         url_2:
           name: Action Button 2 URL
           description: Customise what happens when you press the second Action Button. Select from one of the preconfigured options or enter your own custom URL.
-          default: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg"
+          default: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot-clean.png"
           selector:
             select:
               options:
@@ -729,7 +731,7 @@ blueprint:
                 - label: View Clip (IOS)
                   value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/{{camera}}/master.m3u8"
                 - label: View Snapshot
-                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg"
+                  value: "{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot-clean.png"
                 - label: View Stream
                   value: "{{base_url}}/api/camera_proxy_stream/camera.{{trigger.payload_json['after']['camera'] | lower | replace('-','_')}}?token={{state_attr( 'camera.' ~ camera, 'access_token')}}"
                 - label: Open Home Assistant (web)
@@ -754,7 +756,7 @@ blueprint:
         button_3:
           name: Action Button 3 Text
           description: "The text used on the third Action button at the bottom of the notification. Set the URL below."
-          default: "Silence New Notifications"
+          default: "Stummschalten"
         url_3:
           name: Action Button 3 URL
           description: Customise what happens when you press the third Action Button. Select from one of the preconfigured options or enter your own custom URL.
@@ -1252,7 +1254,7 @@ actions:
                                   # Android Specific
                                   subject: "{{subtitle}}"
                                   image: "{{attachment}}"
-                                  video: "{{video}}"
+                                  #video: "{{video}}"
                                   clickAction: "{{tap_action}}"
                                   ttl: 0
                                   priority: high
@@ -1264,8 +1266,8 @@ actions:
                                   subtitle: "{{subtitle}}"
                                   url: "{{tap_action}}"
                                   attachment:
-                                    url: "{{video if video else attachment }}"
-                                    content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+                                    url: "{{ attachment }}"
+                                    content-type: "{{ 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                   push:
                                     sound:
                                       name: "{{sound}}"
@@ -1355,7 +1357,7 @@ actions:
                                 # Android Specific
                                 subject: "{{subtitle}}"
                                 image: "{{attachment}}"
-                                video: "{{video}}"
+                                #video: "{{video}}"
                                 clickAction: "{{tap_action}}"
                                 ttl: 0
                                 priority: high
@@ -1373,8 +1375,11 @@ actions:
                                 # iOS Specific
                                 url: "{{tap_action}}"
                                 attachment:
-                                  url: "{{video if video else attachment }}"
-                                  content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+                                  url: "{{ attachment }}"
+                                  content-type: "{{ 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"                                
+                                #attachment:
+                                #  url: "{{video if video else attachment }}"
+                                #  content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                 push:
                                   sound:
                                     name: "{{sound}}"
@@ -1735,7 +1740,8 @@ actions:
                                         url: "{{tap_action}}"
                                         attachment:
                                           url: "{{video if video else attachment }}"
-                                          content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+                                          content-type: "{{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"                                          
+                                          #content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                         push:
                                           sound:
                                             name: "{{ iif(silent_update, 'none', sound) }}"
@@ -1846,7 +1852,8 @@ actions:
                                       url: "{{tap_action}}"
                                       attachment:
                                         url: "{{video if video else attachment }}"
-                                        content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+                                        content-type: "{{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"                                          
+                                        #content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                       push:
                                         sound:
                                           name: "{{ iif(silent_update, 'none', sound) }}"
