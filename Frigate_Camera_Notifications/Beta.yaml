@@ -1805,13 +1805,13 @@ actions:
                                           url: "{{tap_action}}"
                                           attachment:
                                             url: "{{video if video else attachment }}"
-                                            content-type: "{{ new_content_type }}"
+                                            #content-type: "{{ new_content_type }}"
                                           push:
                                             sound:
                                               name: "{{ iif(silent_update, 'none', sound) }}"
                                               volume: "{{ iif((silent_update or sound == 'none'), 0, volume) }}"
                                               critical: "{{ iif(critical, 1, 0) }}"
-                                          entity_id: "{{ios_live_view}}"
+                                          #entity_id: "{{ios_live_view}}"
                                           # Actions
                                           actions:
                                             - action: URI
@@ -1859,14 +1859,14 @@ actions:
                                       url: "{{tap_action}}"
                                       attachment:
                                         url: "{{video if video else attachment }}"
-                                        content-type: "{{ new_content_type }}"                                          
+                                        #content-type: "{{ new_content_type }}"                                          
                                         #content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                       push:
                                         sound:
                                           name: "{{ iif(silent_update, 'none', sound) }}"
                                           volume: "{{ iif((silent_update or sound == 'none'), 0, volume) }}"
                                           critical: "{{ iif(critical, 1, 0) }}"
-                                      entity_id: "{{ios_live_view}}"
+                                      #entity_id: "{{ios_live_view}}"
                                       # Actions
                                       actions:
                                         - action: URI
