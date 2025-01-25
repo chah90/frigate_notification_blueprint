@@ -124,7 +124,7 @@ blueprint:
             select:
               options:
                 - label: "Default:   e.g., Person wurde an der Haustür erkannt."
-                  value: "{{ label }} {{ ' wurde' if type == 'end' else '' }} an der {{ camera_name }} erkannt."
+                  value: "{{ label }}{{ ' wurde' if type == 'end' else '' }} an der {{ camera_name }} erkannt."
                 - label: "Short:     e.g., Person detected - Side"
                   value: "{{ label }} erkannt - {{ camera_name }}"
                 - label: "Short with a timestamp HH:MM"
@@ -568,7 +568,7 @@ blueprint:
         cooldown:
           name: Cooldown (Optional)
           description: Delay before sending another notification for this camera after the last event.
-          default: 0
+          default: 10
           selector:
             number:
               max: 86400
