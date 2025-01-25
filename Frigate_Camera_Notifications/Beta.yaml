@@ -1120,6 +1120,7 @@ actions:
               attachment: !input attachment
               video: !input video
               custom_action_auto: !input custom_action_auto
+              content_type: "{{ 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"
           - alias: "Debug: Initial Output"
             choose:
               - conditions:
@@ -1147,6 +1148,7 @@ actions:
                             Attachment: {{attachment if not redacted or not base_url else attachment |replace(base_url, 'REDACTED')}}
                             Video: {{video if not redacted or not base_url else video |replace(base_url, 'REDACTED')}}, 
                             iOS URL: {{(video if not redacted or not base_url else video |replace(base_url, 'REDACTED')) if video|length >0 else attachment if not redacted or not base_url else attachment |replace(base_url, 'REDACTED')}}
+                            Content-Type: {{content_type}},
                             Target: {{'group (input/formatted): ' + notify_group + '/' + notify_group_target + ', ' if notify_group else 'Mobile Device'}}, 
                             Cooldown: {{cooldown}}s, 
                             Initial Delay: {{initial_delay}}s, 
@@ -1267,7 +1269,7 @@ actions:
                                   url: "{{tap_action}}"
                                   attachment:
                                     url: "{{ attachment }}"
-                                    content-type: "{{ 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+                                    content-type: "{{content_type}}"
                                   push:
                                     sound:
                                       name: "{{sound}}"
@@ -1323,7 +1325,7 @@ actions:
                                     url: "{{tap_action}}"
                                     attachment:
                                       url: "{{video if video else attachment }}"
-                                      content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+                                      content-type: "{{ content_type }}"
                                     push:
                                       sound:
                                         name: "{{sound}}"
@@ -1376,7 +1378,7 @@ actions:
                                 url: "{{tap_action}}"
                                 attachment:
                                   url: "{{ attachment }}"
-                                  content-type: "{{ 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"                                
+                                  content-type: "{{content_type}}"                                
                                 #attachment:
                                 #  url: "{{video if video else attachment }}"
                                 #  content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
@@ -1551,6 +1553,8 @@ actions:
                     silent_update: "{{ alert_once or (not presence_changed and not zone_updated and not object_updated and not sub_label_updated) }}"
 
                     custom_action_auto_multi: !input custom_action_auto_multi
+
+                    content_type: {{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}
                 - alias: "Debug: Loop Output"
                   choose:
                     - conditions:
@@ -1740,7 +1744,7 @@ actions:
                                         url: "{{tap_action}}"
                                         attachment:
                                           url: "{{video if video else attachment }}"
-                                          content-type: "{{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"                                          
+                                          content-type: "{{ content_type }}"                                          
                                           #content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                         push:
                                           sound:
@@ -1798,7 +1802,7 @@ actions:
                                           url: "{{tap_action}}"
                                           attachment:
                                             url: "{{video if video else attachment }}"
-                                            content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
+                                            content-type: "{{ content_type }}"
                                           push:
                                             sound:
                                               name: "{{ iif(silent_update, 'none', sound) }}"
@@ -1852,7 +1856,7 @@ actions:
                                       url: "{{tap_action}}"
                                       attachment:
                                         url: "{{video if video else attachment }}"
-                                        content-type: "{{ 'mp4' if 'mp4' in video else 'png' if 'png' in attachment else 'jpeg' if 'jpg' in attachment else 'gif' }}"                                          
+                                        content-type: "{{ content_type }}"                                          
                                         #content-type: "{{ 'application/vnd.apple.mpegurl' if 'm3u8' in video else 'mp4' if 'mp4' in video else 'jpeg' if 'jpg' in attachment else 'gif' }}"
                                       push:
                                         sound:
