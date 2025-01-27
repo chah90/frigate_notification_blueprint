@@ -147,4 +147,4 @@ action:
       - "off"
     retries: 3
     backoff: "0.5"
-    state_grace: {{ local_motion_dim_time + 0.1 }}
+    state_grace: "{{ local_motion_dim_time + 0.1 }}"
