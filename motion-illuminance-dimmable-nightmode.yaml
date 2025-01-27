@@ -116,14 +116,12 @@ condition:
   entity_id: !input lux_entity
   below: !input lux_level
 action:
-- action: retry.actions
+- action: retry.action
+  target:
+    entity_id: !input light_target
   data:
-    sequence:
-      - action: light.turn_on
-        target:
-          entity_id: !input light_target
-    expected_state:
-      - "on"
+    action: light.turn_on
+    expected_state: "on"
     retries: 3
     backoff: "0.5"
 #- service: light.turn_on
@@ -135,16 +133,13 @@ action:
 - delay: ' {% if today_at(states(local_night_end)) < now() or now() < today_at(states(local_night_start))  %}
     {{ local_motion_delay_day - local_motion_dim_time }} {% else %} {{ local_motion_delay_night
     - local_motion_dim_time }} {% endif %} '
-- action: retry.actions
+- action: retry.action
+  target:
+    entity_id: !input light_target
   data:
-    sequence:
-      - action: light.turn_off
-        target:
-          entity_id: !input light_target
-        data:
-          transition: !input dim_time  
-    expected_state:
-      - "off"
+    action: light.turn_off
+    transition: !input dim_time  
+    expected_state: "off"
     retries: 3
     backoff: "0.5"
     state_grace: "{{ local_motion_dim_time + 0.1 }}"
