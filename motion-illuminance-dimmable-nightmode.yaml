@@ -117,8 +117,7 @@ condition:
   below: !input lux_level
 action:
 - action: retry.action
-  target:
-    entity_id: !input light_target
+  target: !input light_target
   data:
     action: light.turn_on
     expected_state: "on"
@@ -134,8 +133,7 @@ action:
     {{ local_motion_delay_day - local_motion_dim_time }} {% else %} {{ local_motion_delay_night
     - local_motion_dim_time }} {% endif %} '
 - action: retry.action
-  target:
-    entity_id: !input light_target
+  target: !input light_target
   data:
     action: light.turn_off
     transition: !input dim_time  
